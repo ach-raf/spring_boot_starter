@@ -31,8 +31,17 @@ public class UserService {
     }
 
     public User update(String _id_to_update, User _user) {
-        _user.setId(_id_to_update);
-        return user_repository.save(_user);
+        return user_repository.findById(_id_to_update)
+                .map(user -> {
+                    user.setName(_user.getName());
+                    user.setEmail(_user.getEmail());
+                    user.setAvatar(_user.getAvatar());
+                    return user_repository.save(user);
+                })
+                .orElseGet(() -> {
+                    _user.setId(_id_to_update);
+                    return user_repository.save(_user);
+                });
     }
 
 

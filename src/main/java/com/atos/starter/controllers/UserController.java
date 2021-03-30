@@ -14,7 +14,7 @@ import java.util.Optional;
 
 
 @RestController
-// Adding /api to every route
+// Add /api to every route
 @RequestMapping("/api")
 // Accept Cross origin calls
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5000"})
@@ -34,11 +34,21 @@ public class UserController {
         return user.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+    @PostMapping("/users")
+    ResponseEntity<User> adduser(@RequestBody User user) {
+	    User result = userService.add(user);
+	    return ResponseEntity.ok().body(result);
+    }
     // Update user method
     @PutMapping("/user/{id}")
-    ResponseEntity<User> updateUser(@RequestBody User user) {
-        User result = userService.add(user);
+    ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+        User result = userService.update(id, user);
         return ResponseEntity.ok().body(result);
+    }
+
+    @DeleteMapping("/users/{id}")
+    void deleteUser(@PathVariable String id) {
+        userService.deleteById(id);
     }
 
 }
